@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import SearchBar from "./components/SearchBar";
+import ImageList from "./components/ImageList";
+import ImageViewer from "./components/ImageViewer";
+import searchImages from "./api";
+import { useState } from "react";
 
 function App() {
+  const [images, setImages] = useState([]);
+  const [bigImage, setBigImage] = useState("");
+
+  const handleSubmit = async (term) => {
+    const result = await searchImages(term);
+    setImages(result);
+  };
+  const viewIamge = (e) => {
+    setBigImage(e.target);
+  };
+  const closeImage = () => {
+    setBigImage("");
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <SearchBar onSubmit={handleSubmit} />
+      <ImageList images={images} view={viewIamge} />
+      {bigImage ? (
+        <ImageViewer
+          bigImage={bigImage}
+          close={closeImage}
+          imagesList={images}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
